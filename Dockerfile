@@ -1,6 +1,5 @@
 FROM m.daocloud.io/docker.io/library/golang:1.21.11-alpine AS builder
 
-
 # Move to working directory (/build).
 WORKDIR /src
 
@@ -19,7 +18,7 @@ WORKDIR /app
 
 COPY --from=builder /src/bin/go-web-template .
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["./go-web-template"]
 
