@@ -1,4 +1,4 @@
-FROM golang:1.21.11-alpine AS builder
+FROM m.daocloud.io/docker.io/library/golang:1.21.11-alpine AS builder
 
 
 # Move to working directory (/build).
@@ -13,7 +13,7 @@ COPY . .
 
 RUN make build
 
-FROM alpine:latest
+FROM m.daocloud.io/docker.io/library/alpine:latest
 
 WORKDIR /app
 
