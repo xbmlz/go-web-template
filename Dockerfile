@@ -6,7 +6,7 @@ WORKDIR /src
 
 COPY . .
 
-RUN make build
+RUN ["/bin/bash", "-c", "make build"]
 
 RUN chmod 755 ./bin/go-web-template
 
