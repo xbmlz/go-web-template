@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.21.11-alpine AS builder
 
 
 # Move to working directory (/build).
