@@ -17,7 +17,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: apache/answer
+          images: registry.cn-beijing.aliyuncs.com/xbmlz/go-web-template
           tags: |
             type=raw,value=latest
             type=ref,enable=true,priority=600,prefix=,suffix=,event=branch
