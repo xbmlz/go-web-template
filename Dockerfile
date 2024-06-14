@@ -16,7 +16,7 @@ WORKDIR /app
 
 COPY --from=builder /src/bin/go-web-template .
 
-RUN chmod 755 .go-web-template
+RUN chmod 755 ./go-web-template
 
 EXPOSE 3000
 
