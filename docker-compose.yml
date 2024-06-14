@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   gin-web-template:
-    build:
-      context: .
+    image: registry.cn-beijing.aliyuncs.com/xbmlz/go-web-template:latest
     container_name: gin-web-template
     ports:
       - 3000:3000
