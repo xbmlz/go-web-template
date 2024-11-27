@@ -1,0 +1,11 @@
+server:
+  host: 0.0.0.0
+  port: 8080
+
+database:
+  host: 193.112.175.178
+  port: 15432
+  user: xbmlz
+  password: xbmlz@666
+  name: go_web_template
+  args: sslmode=disable TimeZone=Asia/Shanghai
