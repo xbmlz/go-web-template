@@ -15,12 +15,6 @@ import (
 	"github.com/xbmlz/go-web-template/internal/validator"
 )
 
-var configFile string
-
-func init() {
-	flag.StringVar(&configFile, "c", "config.yaml", "path to the configuration file, e.g. -c config.yaml")
-}
-
 // @title go-web-template API
 // @version 1.0
 // @description This is a sample server for go-web-template
@@ -29,9 +23,13 @@ func init() {
 // @name Authorization
 // @basePath /api
 func main() {
+	var confPath string
+
+	flag.StringVar(&confPath, "c", "conf/config.yaml", "path to the configuration file, e.g. -c config.yaml")
+	flag.Parse()
 
 	// initialize the configuration
-	c := config.MustInit(configFile)
+	c := config.MustInit(confPath)
 
 	// initialize the logger
 	logger.Init(c.Server.IsDev())
