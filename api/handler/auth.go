@@ -21,6 +21,7 @@ func (h *AuthHandler) Register(router *gin.RouterGroup) {
 	group := router.Group("/auth")
 	{
 		group.POST("/register", h.register)
+		group.POST("/login", h.login)
 	}
 }
 
@@ -34,9 +35,26 @@ func (h *AuthHandler) Register(router *gin.RouterGroup) {
 // @router /auth/register [post]
 func (h *AuthHandler) register(c *gin.Context) {
 	var req dto.RegisterRequest
-	if err := h.BindAndValidate(c, &req); err != nil {
+	if !h.BindAndValidateJSON(c, &req) {
 		return
 	}
 	resp, err := h.authService.Register(c, req)
-	h.Response(c, resp, err)
+	h.Response(c, err, resp)
+}
+
+// @tags auth
+// @summary 登录
+// @description 登录
+// @accept application/json
+// @produce application/json
+// @param body body dto.LoginRequest true "登录请求"
+// @success 200  {object} dto.LoginResponse "登录响应"
+// @router /auth/login [post]
+func (h *AuthHandler) login(c *gin.Context) {
+	var req dto.LoginRequest
+	if !h.BindAndValidateJSON(c, &req) {
+		return
+	}
+	resp, err := h.authService.Login(c, req)
+	h.Response(c, err, resp)
 }

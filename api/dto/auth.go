@@ -1,11 +1,8 @@
 package dto
 
-import "github.com/google/uuid"
-
-type LoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
+import (
+	"time"
+)
 
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required"`
@@ -14,5 +11,15 @@ type RegisterRequest struct {
 }
 
 type RegisterResponse struct {
-	ID uuid.UUID `json:"id"`
+	ID uint `json:"id"`
+}
+
+type LoginRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+type LoginResponse struct {
+	Token       string    `json:"token"`
+	ExpireAt    time.Time `json:"expire_at"`
+	TokenPrefix string    `json:"token_prefix"` // "Bearer"
 }

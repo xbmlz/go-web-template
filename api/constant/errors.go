@@ -4,9 +4,14 @@ import "errors"
 
 var (
 	ErrInvalidRequest = errors.New("error.invalid_request")
-	ErrInvalidToken   = errors.New("error.invalid_token")
 
 	// auth errors
-	ErrUserNotFound   = errors.New("error.auth.user_not_found")
-	ErrUsernameExists = errors.New("error.auth.username_exists")
+	ErrInvalidToken      = errors.New("error.auth.invalid_token")
+	ErrTokenExpired      = errors.New("error.auth.token_expired")
+	ErrUserNotFound      = errors.New("error.auth.user_not_found")
+	ErrUsernameExists    = errors.New("error.auth.username_exists")
+	ErrPasswordIncorrect = errors.New("error.auth.password_incorrect")
+
+	// user errors
+	ErrUserNotActive = errors.New("error.user.not_active")
 )

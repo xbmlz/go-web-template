@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/xbmlz/go-web-template/internal/logger"
 )
 
 type Config struct {
@@ -27,8 +29,10 @@ func Run(h http.Handler, c *Config) {
 		Handler: h,
 	}
 
-	fmt.Printf("Starting server on %s\n", c.Addr())
+	logger.Infof("Starting server on %s", c.Addr())
+	logger.Infof("Swagger UI available at http://%s/swagger/index.html", c.Addr())
+	logger.Info("Press CTRL+C to stop")
 	if err := srv.ListenAndServe(); err != nil {
-		fmt.Printf("Error starting server: %s\n", err)
+		logger.Panicf("ListenAndServe: %v", err)
 	}
 }

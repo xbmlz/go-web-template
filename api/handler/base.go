@@ -9,7 +9,7 @@ import (
 
 type BaseHandler struct{}
 
-func (h *BaseHandler) Response(c *gin.Context, data interface{}, err error) {
+func (h *BaseHandler) Response(c *gin.Context, err error, data interface{}) {
 	if err != nil {
 		h.Error(c, err)
 		return
@@ -27,22 +27,36 @@ func (h *BaseHandler) Error(c *gin.Context, err error) {
 	})
 }
 
-func (h *BaseHandler) ErrorWithCode(c *gin.Context, code int, err error) {
+func (h *BaseHandler) ErrorWithCode(c *gin.Context, err error, code int) {
 	c.JSON(code, gin.H{
 		"error": err.Error(),
 	})
 }
 
-func (h *BaseHandler) BindAndValidate(c *gin.Context, obj interface{}) error {
+func (h *BaseHandler) BindAndValidateJSON(c *gin.Context, obj interface{}) bool {
 	if err := c.ShouldBindJSON(obj); err != nil {
-		h.ErrorWithCode(c, http.StatusBadRequest, err)
-		return err
+		h.ErrorWithCode(c, err, http.StatusBadRequest)
+		return false
 	}
 
 	if err := validator.Validate.Struct(obj); err != nil {
-		h.ErrorWithCode(c, http.StatusBadRequest, err)
-		return err
+		h.ErrorWithCode(c, err, http.StatusBadRequest)
+		return false
 	}
 
-	return nil
+	return true
+}
+
+func (h *BaseHandler) BindAndValidateQuery(c *gin.Context, obj interface{}) bool {
+	if err := c.ShouldBind(obj); err != nil {
+		h.ErrorWithCode(c, err, http.StatusBadRequest)
+		return false
+	}
+
+	if err := validator.Validate.Struct(obj); err != nil {
+		h.ErrorWithCode(c, err, http.StatusBadRequest)
+		return false
+	}
+
+	return true
 }

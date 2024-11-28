@@ -10,3 +10,7 @@ database:
   password: xbmlz@666
   name: go_web_template
   args: sslmode=disable TimeZone=Asia/Shanghai
+
+token:
+  secret: xxx
+  expiration: 3600

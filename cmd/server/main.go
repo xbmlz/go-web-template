@@ -24,17 +24,17 @@ func init() {
 // @title go-web-template API
 // @version 1.0
 // @description This is a sample server for go-web-template
-// @BasePath /api/v1
-// @type apiKey
-// @in Header
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
 // @name Authorization
+// @basePath /api
 func main() {
 
 	// initialize the configuration
 	c := config.MustInit(configFile)
 
 	// initialize the logger
-	logger.Init(c)
+	logger.Init(c.Server.IsDev())
 
 	// initialize the database connection
 	db := database.MustInit(&c.Database)

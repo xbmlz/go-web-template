@@ -1,5 +1,24 @@
-basePath: /api/v1
 definitions:
+  dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.LoginResponse:
+    properties:
+      expire_at:
+        type: string
+      token:
+        type: string
+      token_prefix:
+        description: '"Bearer"'
+        type: string
+    type: object
   dto.RegisterRequest:
     properties:
       email:
@@ -16,6 +35,37 @@ definitions:
   dto.RegisterResponse:
     properties:
       id:
+        type: integer
+    type: object
+  dto.UserPageResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+      page:
+        type: integer
+      size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      status:
+        description: '0: inactive, 1: active, 2: deleted'
+        type: integer
+      updatedAt:
+        type: string
+      username:
         type: string
     type: object
 info:
@@ -24,6 +74,28 @@ info:
   title: go-web-template API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      parameters:
+      - description: 登录请求
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录响应
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+      summary: 登录
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:
@@ -46,4 +118,33 @@ paths:
       summary: 注册
       tags:
       - auth
+  /users:
+    get:
+      description: Get users
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserPageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get users
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

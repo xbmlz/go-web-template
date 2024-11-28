@@ -12,6 +12,7 @@ import (
 	"github.com/xbmlz/go-web-template/docs"
 	"github.com/xbmlz/go-web-template/internal/config"
 	"github.com/xbmlz/go-web-template/internal/middleware"
+	"github.com/xbmlz/go-web-template/internal/token"
 )
 
 func Init(c *config.Config) *gin.Engine {
@@ -40,14 +41,19 @@ func Init(c *config.Config) *gin.Engine {
 		c.JSON(http.StatusOK, "ok")
 	})
 
+	// init token provider
+	token.InitProvider(c.Token)
+
 	root := r.Group(c.Server.BasePath)
 	{
 
 		// service
-		authService := service.NewAuthService()
+		authService := service.NewAuthService(c)
+		userService := service.NewUserService()
 
 		// handler
 		handler.NewAuthHandler(authService).Register(root)
+		handler.NewUserHandler(userService).Register(root)
 	}
 
 	return r

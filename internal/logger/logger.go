@@ -4,21 +4,20 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/xbmlz/go-web-template/internal/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 var logger *zap.Logger
 
-func Init(c *config.Config) {
+func Init(isDev bool) {
 	// First, define our level-handling logic.
 	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel
 	})
 
 	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		if c.Server.IsDev() {
+		if isDev {
 			return lvl < zapcore.ErrorLevel
 		} else {
 			return lvl >= zapcore.InfoLevel && lvl < zapcore.ErrorLevel
