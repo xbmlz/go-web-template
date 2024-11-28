@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xbmlz/go-web-template/api/constant"
+	"github.com/xbmlz/go-web-template/internal/token"
 	"github.com/xbmlz/go-web-template/internal/validator"
 )
 
@@ -59,4 +61,32 @@ func (h *BaseHandler) BindAndValidateQuery(c *gin.Context, obj interface{}) bool
 	}
 
 	return true
+}
+
+func (h *BaseHandler) GetCurrentUserClaims(c *gin.Context) (claims *token.TokenClaims) {
+	claimsValue, exists := c.Get(constant.CtxUserClaimsKey)
+	if !exists {
+		return nil
+	}
+	claims, exists = claimsValue.(*token.TokenClaims)
+	if !exists {
+		return nil
+	}
+	return claims
+}
+
+func (h *BaseHandler) GetCurrentUserID(c *gin.Context) (id uint) {
+	claims := h.GetCurrentUserClaims(c)
+	if claims == nil {
+		return 0
+	}
+	return claims.ID
+}
+
+func (h *BaseHandler) GetCurrentUsername(c *gin.Context) (username string) {
+	claims := h.GetCurrentUserClaims(c)
+	if claims == nil {
+		return ""
+	}
+	return claims.Username
 }
