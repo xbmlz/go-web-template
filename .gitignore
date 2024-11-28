@@ -42,3 +42,7 @@ tmp/
 
 # DB
 *.db
+
+# Logs
+*.log
+logs/
