@@ -6,9 +6,10 @@ import (
 )
 
 type Config struct {
-	Mode string `json:"mode"` // debug or release
-	Host string `json:"host"`
-	Port string `json:"port"`
+	Mode     string `json:"mode"` // debug or release
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	BasePath string `json:"base_path"`
 }
 
 func (c *Config) Addr() string {

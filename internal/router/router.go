@@ -5,8 +5,11 @@ import (
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/xbmlz/go-web-template/api/handler"
 	"github.com/xbmlz/go-web-template/api/service"
+	"github.com/xbmlz/go-web-template/docs"
 	"github.com/xbmlz/go-web-template/internal/config"
 	"github.com/xbmlz/go-web-template/internal/middleware"
 )
@@ -28,20 +31,23 @@ func Init(c *config.Config) *gin.Engine {
 		})
 	})
 
-	root := r.Group("/api")
+	// swagger
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	docs.SwaggerInfo.BasePath = c.Server.BasePath
+
+	// health check
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, "ok")
+	})
+
+	root := r.Group(c.Server.BasePath)
 	{
-		// ping
-		root.GET("/ping", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "pong",
-			})
-		})
 
 		// service
 		authService := service.NewAuthService()
 
-		handler.NewAuthHandler(authService).Setup(root)
-
+		// handler
+		handler.NewAuthHandler(authService).Register(root)
 	}
 
 	return r

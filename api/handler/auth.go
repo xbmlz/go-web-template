@@ -7,6 +7,7 @@ import (
 )
 
 type AuthHandler struct {
+	BaseHandler
 	authService service.AuthService
 }
 
@@ -16,26 +17,26 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 	}
 }
 
-func (a *AuthHandler) Setup(router *gin.RouterGroup) {
+func (h *AuthHandler) Register(router *gin.RouterGroup) {
 	group := router.Group("/auth")
 	{
-		group.POST("/login", a.register)
+		group.POST("/register", h.register)
 	}
 }
 
-func (a *AuthHandler) register(c *gin.Context) {
-	// TODO: implement register logic
+// @tags auth
+// @summary 注册
+// @description 注册
+// @accept application/json
+// @produce application/json
+// @param body body dto.RegisterRequest true "注册请求"
+// @success 200  {object} dto.RegisterResponse "注册响应"
+// @router /auth/register [post]
+func (h *AuthHandler) register(c *gin.Context) {
 	var req dto.RegisterRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{
-			"message": "invalid request",
-		})
+	if err := h.BindAndValidate(c, &req); err != nil {
 		return
 	}
-
-	a.authService.Register(c, req)
-
-	c.JSON(200, gin.H{
-		"message": "register success",
-	})
+	resp, err := h.authService.Register(c, req)
+	h.Response(c, resp, err)
 }

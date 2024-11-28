@@ -1,11 +1,21 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type BaseModel struct {
-	ID        uint      `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key"`
+	CreatedAt time.Time `gorm:"type:timestamp;" json:"createdAt"`
+	UpdatedAt time.Time `gorm:"type:timestamp;" json:"updatedAt"`
+}
+
+func (b *BaseModel) BeforeCreate(tx *gorm.DB) error {
+	b.ID = uuid.New()
+	return nil
 }
 
 func AllModels() []interface{} {
