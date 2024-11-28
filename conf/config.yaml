@@ -14,3 +14,11 @@ database:
 token:
   secret: xxx
   expiration: 3600
+
+log:
+  level: debug
+  filename: logs/app.log
+  max_size: 500
+  max_backups: 30
+  max_age: 15
+  compress: true

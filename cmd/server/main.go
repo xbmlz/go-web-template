@@ -32,7 +32,7 @@ func main() {
 	c := config.MustInit(confPath)
 
 	// initialize the logger
-	logger.Init(c.Server.IsDev())
+	logger.Init(&c.Log)
 
 	// initialize the database connection
 	db := database.MustInit(&c.Database)

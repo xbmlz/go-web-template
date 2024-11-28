@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 	"github.com/xbmlz/go-web-template/internal/database"
+	"github.com/xbmlz/go-web-template/internal/logger"
 	"github.com/xbmlz/go-web-template/internal/server"
 	"github.com/xbmlz/go-web-template/internal/token"
 )
@@ -11,6 +12,7 @@ type Config struct {
 	Server   server.Config   `json:"server"`
 	Database database.Config `json:"database"`
 	Token    token.Config    `json:"token"`
+	Log      logger.Config   `json:"log"`
 }
 
 func Init(configFile string) (*Config, error) {

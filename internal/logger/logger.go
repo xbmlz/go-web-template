@@ -1,47 +1,75 @@
 package logger
 
 import (
-	"os"
-
-	"github.com/fatih/color"
+	"github.com/mattn/go-colorable"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var logger *zap.Logger
 
-func Init(isDev bool) {
-	// First, define our level-handling logic.
-	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.ErrorLevel
-	})
+type Config struct {
+	Level      string `json:"level"`
+	Filename   string `json:"filename"`
+	MaxSize    int    `json:"max_size"`
+	MaxBackups int    `json:"max_backups"`
+	MaxAge     int    `json:"max_age"`
+	Compress   bool   `json:"compress"`
+}
 
-	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		if isDev {
-			return lvl < zapcore.ErrorLevel
-		} else {
-			return lvl >= zapcore.InfoLevel && lvl < zapcore.ErrorLevel
-		}
-	})
+func Init(c *Config) {
+	// cores
+	cores := []zapcore.Core{}
 
-	// Directly output to stdout and stderr, and add caller information.
-	consoleDebugging := zapcore.Lock(os.Stdout)
-	consoleErrors := zapcore.Lock(os.Stderr)
-	encoderConfig := zap.NewDevelopmentEncoderConfig()
+	// level
+	atomicLevel := zap.NewAtomicLevel()
+	atomicLevel.SetLevel(ParseLevel(c.Level))
+
+	// console log
+	// set encoder
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
+	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+	encoderConfig.EncodeName = zapcore.FullNameEncoder
 	encoderConfig.ConsoleSeparator = "\t"
-	encoderConfig.EncodeLevel = colorLevelEncoder
-	consoleEncoder := zapcore.NewConsoleEncoder(encoderConfig)
 
-	// Join the outputs, encoders, and level-handling functions into
-	// zapcore.Cores, then tee the two cores together.
-	core := zapcore.NewTee(
-		zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
-		zapcore.NewCore(consoleEncoder, consoleDebugging, lowPriority),
-	)
+	cores = append(cores, zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		zapcore.AddSync(colorable.NewColorableStdout()),
+		atomicLevel,
+	))
 
-	// From a zapcore.Core, it's easy to construct a Logger.
-	logger = zap.New(core, zap.AddCaller()).WithOptions(zap.AddCallerSkip(1))
+	// file log
+	if c.Filename != "" {
+		fileEncoderConfig := encoderConfig
+		fileEncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+		fileEncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+		fileEncoder := zapcore.NewJSONEncoder(fileEncoderConfig)
+		fileCore := zapcore.NewCore(
+			fileEncoder,
+			zapcore.AddSync(&lumberjack.Logger{
+				Filename:   c.Filename,
+				MaxSize:    c.MaxSize,
+				MaxBackups: c.MaxBackups,
+				MaxAge:     c.MaxAge,
+				Compress:   c.Compress,
+			}),
+			atomicLevel,
+		)
+		cores = append(cores, fileCore)
+	}
+
+	zapOpts := []zap.Option{
+		zap.AddCaller(),
+		zap.AddCallerSkip(1),
+	}
+	if c.Level == "debug" {
+		zapOpts = append(zapOpts, zap.Development(), zap.AddStacktrace(zapcore.ErrorLevel))
+	}
+
+	logger = zap.New(zapcore.NewTee(cores...), zapOpts...)
 
 	defer logger.Sync()
 }
@@ -62,27 +90,6 @@ func ParseLevel(l string) (level zapcore.Level) {
 		level = zapcore.DebugLevel
 	}
 	return
-}
-
-func colorLevelEncoder(l zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
-	colorLevel := color.New()
-
-	switch l {
-	case zapcore.DebugLevel:
-		colorLevel.Add(color.FgCyan)
-	case zapcore.InfoLevel:
-		colorLevel.Add(color.FgGreen)
-	case zapcore.WarnLevel:
-		colorLevel.Add(color.FgYellow)
-	case zapcore.ErrorLevel, zapcore.DPanicLevel:
-		colorLevel.Add(color.FgHiRed)
-	case zapcore.PanicLevel, zapcore.FatalLevel:
-		colorLevel.Add(color.FgRed)
-	default:
-		colorLevel.Add(color.Reset)
-	}
-
-	enc.AppendString(colorLevel.Sprint(l.CapitalString()))
 }
 
 func Debug(v ...interface{}) {
