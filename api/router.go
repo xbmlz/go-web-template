@@ -55,7 +55,7 @@ func InitRouter(c *config.Config) *gin.Engine {
 		menuService := service.NewSysMenuService()
 
 		// handler
-		handler.NewAuthHandler(authService).RegisterRoutes(root)
+		handler.NewAuthHandler(authService, userService, menuService).RegisterRoutes(root)
 		handler.NewUserHandler(userService).RegisterRoutes(root)
 		handler.NewRoleHandler(roleService, menuService).RegisterRoutes(root)
 		handler.NewMenuHandler(menuService).RegisterRoutes(root)

@@ -16,17 +16,17 @@ type BaseModel struct {
 
 type Querier interface {
 	// SELECT * FROM @@table where id = @id
-	FindByID(id uint) (gen.T, error)
+	FindByID(id uint) (*gen.T, error)
 	// SELECT * FROM @@table where id in @ids
-	FindByIDs(ids []uint) (gen.T, error)
+	FindByIDs(ids []uint) (*gen.T, error)
 
 	// UPDATE @@table SET @field = @value where id = @id
-	UpdateByID(id uint, field string, value interface{}) (gen.T, error)
+	UpdateByID(id uint, field string, value interface{}) (*gen.T, error)
 
 	// DELETE FROM @@table where id = @id
-	DeleteByID(id uint) (gen.T, error)
+	DeleteByID(id uint) (*gen.T, error)
 	// DELETE FROM @@table where id in @ids
-	DeleteByIDs(ids []uint) (gen.T, error)
+	DeleteByIDs(ids []uint) (*gen.T, error)
 }
 
 func AllModels() []interface{} {

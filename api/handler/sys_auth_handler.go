@@ -13,11 +13,15 @@ import (
 type AuthHandler struct {
 	BaseHandler
 	authService service.SysAuthService
+	userService service.SysUserService
+	menuService service.SysMenuService
 }
 
-func NewAuthHandler(authService service.SysAuthService) *AuthHandler {
+func NewAuthHandler(authService service.SysAuthService, userService service.SysUserService, menuService service.SysMenuService) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
+		userService: userService,
+		menuService: menuService,
 	}
 }
 
@@ -80,7 +84,7 @@ func (h *AuthHandler) user(c *gin.Context) {
 		h.ErrorWithCode(c, constant.ErrUnauthorized, http.StatusUnauthorized)
 		return
 	}
-	info, err := h.authService.GetUserInfo(userID)
+	info, err := h.userService.GetUserByID(userID)
 	h.Response(c, err, info)
 }
 
@@ -99,6 +103,21 @@ func (h *AuthHandler) permissions(c *gin.Context) {
 		return
 	}
 
-	permissions, err := h.authService.GetUserPermissions(userID)
-	h.Response(c, err, permissions)
+	user, err := h.userService.GetUserByID(userID)
+	if err != nil {
+		h.ErrorWithCode(c, constant.ErrUnauthorized, http.StatusUnauthorized)
+		return
+	}
+
+	roleIDs := make([]uint, 0)
+	for _, role := range user.Roles {
+		roleIDs = append(roleIDs, role.ID)
+	}
+
+	// get user menus
+	menus, err := h.menuService.GetMenuTreeByRoleIds(roleIDs)
+
+	h.Response(c, err, dto.UserPermissionsResponse{
+		Menus: menus,
+	})
 }

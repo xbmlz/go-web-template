@@ -34,11 +34,6 @@ func newRole(db *gorm.DB, opts ...gen.DOOption) role {
 	_role.Code = field.NewString(tableName, "code")
 	_role.Desc = field.NewString(tableName, "desc")
 	_role.Status = field.NewInt8(tableName, "status")
-	_role.Menus = roleManyToManyMenus{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("Menus", "model.Menu"),
-	}
 
 	_role.fillFieldMap()
 
@@ -56,7 +51,6 @@ type role struct {
 	Code      field.String
 	Desc      field.String
 	Status    field.Int8
-	Menus     roleManyToManyMenus
 
 	fieldMap map[string]field.Expr
 }
@@ -96,7 +90,7 @@ func (r *role) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (r *role) fillFieldMap() {
-	r.fieldMap = make(map[string]field.Expr, 8)
+	r.fieldMap = make(map[string]field.Expr, 7)
 	r.fieldMap["id"] = r.ID
 	r.fieldMap["created_at"] = r.CreatedAt
 	r.fieldMap["updated_at"] = r.UpdatedAt
@@ -104,7 +98,6 @@ func (r *role) fillFieldMap() {
 	r.fieldMap["code"] = r.Code
 	r.fieldMap["desc"] = r.Desc
 	r.fieldMap["status"] = r.Status
-
 }
 
 func (r role) clone(db *gorm.DB) role {
@@ -117,81 +110,10 @@ func (r role) replaceDB(db *gorm.DB) role {
 	return r
 }
 
-type roleManyToManyMenus struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a roleManyToManyMenus) Where(conds ...field.Expr) *roleManyToManyMenus {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a roleManyToManyMenus) WithContext(ctx context.Context) *roleManyToManyMenus {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a roleManyToManyMenus) Session(session *gorm.Session) *roleManyToManyMenus {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a roleManyToManyMenus) Model(m *model.Role) *roleManyToManyMenusTx {
-	return &roleManyToManyMenusTx{a.db.Model(m).Association(a.Name())}
-}
-
-type roleManyToManyMenusTx struct{ tx *gorm.Association }
-
-func (a roleManyToManyMenusTx) Find() (result []*model.Menu, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a roleManyToManyMenusTx) Append(values ...*model.Menu) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a roleManyToManyMenusTx) Replace(values ...*model.Menu) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a roleManyToManyMenusTx) Delete(values ...*model.Menu) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a roleManyToManyMenusTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a roleManyToManyMenusTx) Count() int64 {
-	return a.tx.Count()
-}
-
 type roleDo struct{ gen.DO }
 
 // SELECT * FROM @@table where id = @id
-func (r roleDo) FindByID(id uint) (result model.Role, err error) {
+func (r roleDo) FindByID(id uint) (result *model.Role, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -206,7 +128,7 @@ func (r roleDo) FindByID(id uint) (result model.Role, err error) {
 }
 
 // SELECT * FROM @@table where id in @ids
-func (r roleDo) FindByIDs(ids []uint) (result model.Role, err error) {
+func (r roleDo) FindByIDs(ids []uint) (result *model.Role, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -221,7 +143,7 @@ func (r roleDo) FindByIDs(ids []uint) (result model.Role, err error) {
 }
 
 // UPDATE @@table SET @field = @value where id = @id
-func (r roleDo) UpdateByID(id uint, field string, value interface{}) (result model.Role, err error) {
+func (r roleDo) UpdateByID(id uint, field string, value interface{}) (result *model.Role, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -238,7 +160,7 @@ func (r roleDo) UpdateByID(id uint, field string, value interface{}) (result mod
 }
 
 // DELETE FROM @@table where id = @id
-func (r roleDo) DeleteByID(id uint) (result model.Role, err error) {
+func (r roleDo) DeleteByID(id uint) (result *model.Role, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -253,7 +175,7 @@ func (r roleDo) DeleteByID(id uint) (result model.Role, err error) {
 }
 
 // DELETE FROM @@table where id in @ids
-func (r roleDo) DeleteByIDs(ids []uint) (result model.Role, err error) {
+func (r roleDo) DeleteByIDs(ids []uint) (result *model.Role, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder

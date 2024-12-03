@@ -105,7 +105,7 @@ func (u userRole) replaceDB(db *gorm.DB) userRole {
 type userRoleDo struct{ gen.DO }
 
 // SELECT * FROM @@table where id = @id
-func (u userRoleDo) FindByID(id uint) (result model.UserRole, err error) {
+func (u userRoleDo) FindByID(id uint) (result *model.UserRole, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -120,7 +120,7 @@ func (u userRoleDo) FindByID(id uint) (result model.UserRole, err error) {
 }
 
 // SELECT * FROM @@table where id in @ids
-func (u userRoleDo) FindByIDs(ids []uint) (result model.UserRole, err error) {
+func (u userRoleDo) FindByIDs(ids []uint) (result *model.UserRole, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -135,7 +135,7 @@ func (u userRoleDo) FindByIDs(ids []uint) (result model.UserRole, err error) {
 }
 
 // UPDATE @@table SET @field = @value where id = @id
-func (u userRoleDo) UpdateByID(id uint, field string, value interface{}) (result model.UserRole, err error) {
+func (u userRoleDo) UpdateByID(id uint, field string, value interface{}) (result *model.UserRole, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -152,7 +152,7 @@ func (u userRoleDo) UpdateByID(id uint, field string, value interface{}) (result
 }
 
 // DELETE FROM @@table where id = @id
-func (u userRoleDo) DeleteByID(id uint) (result model.UserRole, err error) {
+func (u userRoleDo) DeleteByID(id uint) (result *model.UserRole, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -167,7 +167,7 @@ func (u userRoleDo) DeleteByID(id uint) (result model.UserRole, err error) {
 }
 
 // DELETE FROM @@table where id in @ids
-func (u userRoleDo) DeleteByIDs(ids []uint) (result model.UserRole, err error) {
+func (u userRoleDo) DeleteByIDs(ids []uint) (result *model.UserRole, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder

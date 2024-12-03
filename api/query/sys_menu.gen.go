@@ -125,7 +125,7 @@ func (m menu) replaceDB(db *gorm.DB) menu {
 type menuDo struct{ gen.DO }
 
 // SELECT * FROM @@table where id = @id
-func (m menuDo) FindByID(id uint) (result model.Menu, err error) {
+func (m menuDo) FindByID(id uint) (result *model.Menu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -140,7 +140,7 @@ func (m menuDo) FindByID(id uint) (result model.Menu, err error) {
 }
 
 // SELECT * FROM @@table where id in @ids
-func (m menuDo) FindByIDs(ids []uint) (result model.Menu, err error) {
+func (m menuDo) FindByIDs(ids []uint) (result *model.Menu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -155,7 +155,7 @@ func (m menuDo) FindByIDs(ids []uint) (result model.Menu, err error) {
 }
 
 // UPDATE @@table SET @field = @value where id = @id
-func (m menuDo) UpdateByID(id uint, field string, value interface{}) (result model.Menu, err error) {
+func (m menuDo) UpdateByID(id uint, field string, value interface{}) (result *model.Menu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -172,7 +172,7 @@ func (m menuDo) UpdateByID(id uint, field string, value interface{}) (result mod
 }
 
 // DELETE FROM @@table where id = @id
-func (m menuDo) DeleteByID(id uint) (result model.Menu, err error) {
+func (m menuDo) DeleteByID(id uint) (result *model.Menu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -187,7 +187,7 @@ func (m menuDo) DeleteByID(id uint) (result model.Menu, err error) {
 }
 
 // DELETE FROM @@table where id in @ids
-func (m menuDo) DeleteByIDs(ids []uint) (result model.Menu, err error) {
+func (m menuDo) DeleteByIDs(ids []uint) (result *model.Menu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder

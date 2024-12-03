@@ -105,7 +105,7 @@ func (r roleMenu) replaceDB(db *gorm.DB) roleMenu {
 type roleMenuDo struct{ gen.DO }
 
 // SELECT * FROM @@table where id = @id
-func (r roleMenuDo) FindByID(id uint) (result model.RoleMenu, err error) {
+func (r roleMenuDo) FindByID(id uint) (result *model.RoleMenu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -120,7 +120,7 @@ func (r roleMenuDo) FindByID(id uint) (result model.RoleMenu, err error) {
 }
 
 // SELECT * FROM @@table where id in @ids
-func (r roleMenuDo) FindByIDs(ids []uint) (result model.RoleMenu, err error) {
+func (r roleMenuDo) FindByIDs(ids []uint) (result *model.RoleMenu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -135,7 +135,7 @@ func (r roleMenuDo) FindByIDs(ids []uint) (result model.RoleMenu, err error) {
 }
 
 // UPDATE @@table SET @field = @value where id = @id
-func (r roleMenuDo) UpdateByID(id uint, field string, value interface{}) (result model.RoleMenu, err error) {
+func (r roleMenuDo) UpdateByID(id uint, field string, value interface{}) (result *model.RoleMenu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -152,7 +152,7 @@ func (r roleMenuDo) UpdateByID(id uint, field string, value interface{}) (result
 }
 
 // DELETE FROM @@table where id = @id
-func (r roleMenuDo) DeleteByID(id uint) (result model.RoleMenu, err error) {
+func (r roleMenuDo) DeleteByID(id uint) (result *model.RoleMenu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -167,7 +167,7 @@ func (r roleMenuDo) DeleteByID(id uint) (result model.RoleMenu, err error) {
 }
 
 // DELETE FROM @@table where id in @ids
-func (r roleMenuDo) DeleteByIDs(ids []uint) (result model.RoleMenu, err error) {
+func (r roleMenuDo) DeleteByIDs(ids []uint) (result *model.RoleMenu, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder

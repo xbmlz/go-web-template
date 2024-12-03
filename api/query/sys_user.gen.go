@@ -38,11 +38,6 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("Roles", "model.Role"),
-		Menus: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Roles.Menus", "model.Menu"),
-		},
 	}
 
 	_user.fillFieldMap()
@@ -126,10 +121,6 @@ type userManyToManyRoles struct {
 	db *gorm.DB
 
 	field.RelationField
-
-	Menus struct {
-		field.RelationField
-	}
 }
 
 func (a userManyToManyRoles) Where(conds ...field.Expr) *userManyToManyRoles {
@@ -200,7 +191,7 @@ func (a userManyToManyRolesTx) Count() int64 {
 type userDo struct{ gen.DO }
 
 // SELECT * FROM @@table where id = @id
-func (u userDo) FindByID(id uint) (result model.User, err error) {
+func (u userDo) FindByID(id uint) (result *model.User, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -215,7 +206,7 @@ func (u userDo) FindByID(id uint) (result model.User, err error) {
 }
 
 // SELECT * FROM @@table where id in @ids
-func (u userDo) FindByIDs(ids []uint) (result model.User, err error) {
+func (u userDo) FindByIDs(ids []uint) (result *model.User, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -230,7 +221,7 @@ func (u userDo) FindByIDs(ids []uint) (result model.User, err error) {
 }
 
 // UPDATE @@table SET @field = @value where id = @id
-func (u userDo) UpdateByID(id uint, field string, value interface{}) (result model.User, err error) {
+func (u userDo) UpdateByID(id uint, field string, value interface{}) (result *model.User, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -247,7 +238,7 @@ func (u userDo) UpdateByID(id uint, field string, value interface{}) (result mod
 }
 
 // DELETE FROM @@table where id = @id
-func (u userDo) DeleteByID(id uint) (result model.User, err error) {
+func (u userDo) DeleteByID(id uint) (result *model.User, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder
@@ -262,7 +253,7 @@ func (u userDo) DeleteByID(id uint) (result model.User, err error) {
 }
 
 // DELETE FROM @@table where id in @ids
-func (u userDo) DeleteByIDs(ids []uint) (result model.User, err error) {
+func (u userDo) DeleteByIDs(ids []uint) (result *model.User, err error) {
 	var params []interface{}
 
 	var generateSQL strings.Builder

@@ -18,8 +18,6 @@ type SysAuthService interface {
 	Register(c *gin.Context, req dto.RegisterRequest) (resp dto.RegisterResponse, err error)
 	Login(c *gin.Context, req dto.LoginRequest) (resp dto.LoginResponse, err error)
 	RefreshToken(c *gin.Context) (resp dto.LoginResponse, err error)
-	GetUserInfo(userID uint) (resp dto.UserInfoResponse, err error)
-	GetUserPermissions(userID uint) (resp dto.UserPermissionsResponse, err error)
 }
 
 type sysAuthService struct {
@@ -104,50 +102,4 @@ func (s *sysAuthService) RefreshToken(c *gin.Context) (resp dto.LoginResponse, e
 	resp.ExpireAt = expiresAt
 	resp.TokenPrefix = constant.TokenPrefix
 	return resp, nil
-}
-
-func (s *sysAuthService) GetUserInfo(userID uint) (resp dto.UserInfoResponse, err error) {
-	// get user by id
-	q := query.User
-	user, err := q.Preload(q.Roles).FindByID(userID)
-	if err != nil {
-		return resp, err
-	}
-	// convert user to dto
-	err = copier.Copy(&resp, &user)
-	if err != nil {
-		return resp, err
-	}
-	return resp, nil
-}
-
-func (s *sysAuthService) GetUserPermissions(userID uint) (resp dto.UserPermissionsResponse, err error) {
-	// get user by id
-	user, err := query.User.Preload(query.User.Roles).FindByID(userID)
-	if err != nil {
-		return resp, err
-	}
-	// get role ids
-	roleIDs := make([]uint, 0)
-	for _, role := range user.Roles {
-		roleIDs = append(roleIDs, role.ID)
-	}
-	// get menus by role ids
-	roleMenus, err := query.RoleMenu.Where(query.RoleMenu.RoleID.In(roleIDs...)).Find()
-	if err != nil {
-		return resp, err
-	}
-	menuIDs := make([]uint, 0)
-	for _, roleMenu := range roleMenus {
-		menuIDs = append(menuIDs, roleMenu.MenuID)
-	}
-	// get menus by ids
-	menus, err := query.Menu.Where(query.Menu.ID.In(menuIDs...)).Find()
-	if err != nil {
-		return resp, err
-	}
-	tree := model.BuildMenuTree(menus, 0)
-	return dto.UserPermissionsResponse{
-		Menus: tree,
-	}, nil
 }

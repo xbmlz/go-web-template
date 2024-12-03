@@ -6,7 +6,7 @@ const count = ref(0)
 </script>
 
 <template>
-  <div class="text-3xl font-bold underline">
+  <div class="text-3xl font-bold underline bg-black">
     <NButton type="primary" @click="count++">
       +
     </NButton>
