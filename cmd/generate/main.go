@@ -32,7 +32,7 @@ func main() {
 	// reuse the database connection in Project or create a connection here
 	// if you want to use GenerateModel/GenerateModelAs, UseDB is necessary, or it will panic
 	var confPath string
-	flag.StringVar(&confPath, "c", "config.yaml", "path to the configuration file, e.g. -c config.yaml")
+	flag.StringVar(&confPath, "c", "conf/config.yaml", "path to the configuration file, e.g. -c config.yaml")
 	flag.Parse()
 
 	c := config.MustInit(confPath)

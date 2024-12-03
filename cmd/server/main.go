@@ -5,12 +5,12 @@ package main
 import (
 	"flag"
 
+	"github.com/xbmlz/go-web-template/api"
 	"github.com/xbmlz/go-web-template/api/model"
 	"github.com/xbmlz/go-web-template/api/query"
 	"github.com/xbmlz/go-web-template/internal/config"
 	"github.com/xbmlz/go-web-template/internal/database"
 	"github.com/xbmlz/go-web-template/internal/logger"
-	"github.com/xbmlz/go-web-template/internal/router"
 	"github.com/xbmlz/go-web-template/internal/server"
 	"github.com/xbmlz/go-web-template/internal/validator"
 )
@@ -38,7 +38,7 @@ func main() {
 	db := database.MustInit(&c.Database)
 
 	// migrate the database
-	db.AutoMigrate(model.AllModels()...)
+	model.MigrateAndSeed(db)
 
 	// setup query
 	query.SetDefault(db)
@@ -47,7 +47,7 @@ func main() {
 	validator.Init()
 
 	// initialize the server
-	r := router.Init(c)
+	r := api.InitRouter(c)
 
 	// start the server
 	server.Run(r, &c.Server)

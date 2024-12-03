@@ -11,6 +11,7 @@ var (
 	ErrUserNotFound      = errors.New("error.auth.user_not_found")
 	ErrUsernameExists    = errors.New("error.auth.username_exists")
 	ErrPasswordIncorrect = errors.New("error.auth.password_incorrect")
+	ErrUnauthorized      = errors.New("error.auth.unauthorized")
 
 	// user errors
 	ErrUserNotActive = errors.New("error.user.not_active")
