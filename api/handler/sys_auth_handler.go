@@ -30,8 +30,13 @@ func (h *AuthHandler) RegisterRoutes(router *gin.RouterGroup) {
 	{
 		group.POST("/register", h.register)
 		group.POST("/login", h.login)
-		group.Use(middleware.AuthRequired()).GET("/user", h.user)
-		group.Use(middleware.AuthRequired()).GET("/permissions", h.permissions)
+
+	}
+	auth := group.Group("")
+	auth.Use(middleware.AuthRequired())
+	{
+		auth.GET("/user", h.user)
+		auth.GET("/permissions", h.permissions)
 	}
 
 }

@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -26,7 +25,7 @@ func InitRouter(c *config.Config) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	r.Use(cors.Default())
+	r.Use(middleware.Cors())
 	r.Use(static.Serve("/", middleware.MustFS("")))
 
 	r.NoRoute(func(c *gin.Context) {

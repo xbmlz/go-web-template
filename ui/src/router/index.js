@@ -34,18 +34,19 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  if (to.path === '/login') {
-    if (userStore.isLoggedIn) {
+  if (userStore.isLoggedIn) {
+    if (to.path === '/login') {
       next('/')
     }
     else {
+      await userStore.getUserInfo()
       next()
     }
   }
   else {
-    if (userStore.isLoggedIn) {
+    if (to.path === '/login') {
       next()
     }
     else {
