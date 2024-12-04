@@ -11,6 +11,12 @@ import (
 
 type BaseHandler struct{}
 
+type ResponseBody struct {
+	Code int         `json:"code"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
 func (h *BaseHandler) Response(c *gin.Context, err error, data interface{}) {
 	if err != nil {
 		h.Error(c, err)
@@ -20,18 +26,26 @@ func (h *BaseHandler) Response(c *gin.Context, err error, data interface{}) {
 }
 
 func (h *BaseHandler) Ok(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, ResponseBody{
+		Code: http.StatusOK,
+		Data: data,
+		Msg:  "success",
+	})
 }
 
 func (h *BaseHandler) Error(c *gin.Context, err error) {
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": err.Error(),
+	c.JSON(http.StatusOK, ResponseBody{
+		Code: http.StatusInternalServerError,
+		Data: nil,
+		Msg:  err.Error(),
 	})
 }
 
 func (h *BaseHandler) ErrorWithCode(c *gin.Context, err error, code int) {
-	c.JSON(code, gin.H{
-		"error": err.Error(),
+	c.JSON(code, ResponseBody{
+		Code: code,
+		Data: nil,
+		Msg:  err.Error(),
 	})
 }
 

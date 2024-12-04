@@ -12,12 +12,12 @@ import (
 )
 
 type Config struct {
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Args     string `json:"args"`
+	Host     string `json:"host" yaml:"host" mapstructure:"host"`
+	Port     string `json:"port" yaml:"port" mapstructure:"port"`
+	User     string `json:"user" yaml:"user" mapstructure:"user"`
+	Password string `json:"password" yaml:"password" mapstructure:"password"`
+	Name     string `json:"name" yaml:"name" mapstructure:"name"`
+	Args     string `json:"args" yaml:"args" mapstructure:"args"`
 }
 
 func (c *Config) DSN() string {

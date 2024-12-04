@@ -8,10 +8,10 @@ import (
 )
 
 type Config struct {
-	Mode     string `json:"mode"` // debug or release
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	BasePath string `json:"base_path"`
+	Mode     string `json:"mode" yaml:"mode" mapstructure:"mode"` // debug or release
+	Host     string `json:"host" yaml:"host" mapstructure:"host"`
+	Port     string `json:"port" yaml:"port" mapstructure:"port"`
+	BasePath string `json:"base_path" yaml:"base_path" mapstructure:"base_path"`
 }
 
 func (c *Config) Addr() string {

@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -11,6 +12,7 @@ import (
 	"github.com/xbmlz/go-web-template/api/service"
 	"github.com/xbmlz/go-web-template/docs"
 	"github.com/xbmlz/go-web-template/internal/config"
+	"github.com/xbmlz/go-web-template/internal/logger"
 	"github.com/xbmlz/go-web-template/internal/middleware"
 	"github.com/xbmlz/go-web-template/internal/token"
 )
@@ -24,6 +26,7 @@ func InitRouter(c *config.Config) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.Use(cors.Default())
 	r.Use(static.Serve("/", middleware.MustFS("")))
 
 	r.NoRoute(func(c *gin.Context) {
@@ -43,6 +46,8 @@ func InitRouter(c *config.Config) *gin.Engine {
 
 	// init token provider
 	token.InitProvider(c.Token)
+
+	logger.Infof("config: %v", c)
 
 	root := r.Group(c.Server.BasePath)
 	{

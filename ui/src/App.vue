@@ -1,15 +1,12 @@
 <script setup>
-import { NButton } from 'naive-ui'
-import { ref } from 'vue'
-
-const count = ref(0)
+import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <div class="text-3xl font-bold underline bg-black">
-    <NButton type="primary" @click="count++">
-      +
-    </NButton>
-    {{ count }}
-  </div>
+  <NConfigProvider>
+    <NMessageProvider>
+      <RouterView />
+    </NMessageProvider>
+  </NConfigProvider>
 </template>
