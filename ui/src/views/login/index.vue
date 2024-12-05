@@ -1,10 +1,10 @@
 <script setup lang="js">
-import { useUserStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { NButton, NForm, NFormItem, NH2, NInput, NSpace, useMessage } from 'naive-ui'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-const userStore = useUserStore()
+const authStore = useAuthStore()
 const message = useMessage()
 const router = useRouter()
 const route = useRoute()
@@ -38,7 +38,7 @@ function handleLogin() {
     isLoading.value = true
 
     try {
-      await userStore.login({
+      await authStore.login({
         username: formModel.value.username,
         password: formModel.value.password,
       })

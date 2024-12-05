@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store'
 import { createAlova } from 'alova'
 import { createServerTokenAuthentication } from 'alova/client'
 import fetchAdapter from 'alova/fetch'
@@ -23,22 +24,29 @@ export const request = createAlova({
   responded: onResponseRefreshToken({
     onSuccess: async (response, method) => {
       const { status } = response
-      if (status >= 400) {
-        throw new Error(response.statusText)
-      }
-      // 返回blob数据
-      if (method.meta?.isBlob)
-        return response.blob()
+      if (status === 200) {
+        // 返回blob数据
+        if (method.meta?.isBlob)
+          return response.blob()
         // 返回json数据
-      const json = await response.json()
-      if (json.code !== 200) {
-        throw new Error(json.msg)
+        const json = await response.json()
+        if (json.code !== 200) {
+          throw new Error(json.msg)
+        }
+        return json.data
       }
-      return json.data
+
+      if (status === 401) {
+        const authStore = useAuthStore()
+        await authStore.logout()
+      }
+
+      throw new Error(response.statusText)
     },
     onError: (error, method) => {
       const tip = `[${method.type}] - [${method.url}] - ${error.message}`
       console.error(tip)
+      window.$message?.error(tip)
     },
     onComplete: async (_method) => {},
   }),

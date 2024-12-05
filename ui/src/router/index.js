@@ -1,4 +1,4 @@
-import { useUserStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const Layout = () => import('@/layout/index.vue')
@@ -35,13 +35,13 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const userStore = useUserStore()
-  if (userStore.isLoggedIn) {
+  const authStore = useAuthStore()
+  if (authStore.isLoggedIn) {
     if (to.path === '/login') {
       next('/')
     }
     else {
-      await userStore.getUserInfo()
+      await authStore.getUserInfo()
       next()
     }
   }
