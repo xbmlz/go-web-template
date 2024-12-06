@@ -4,7 +4,7 @@ import { NConfigProvider } from 'naive-ui'
 </script>
 
 <template>
-  <NConfigProvider>
+  <NConfigProvider class="w-full h-full">
     <NaiveProvider>
       <RouterView />
     </NaiveProvider>

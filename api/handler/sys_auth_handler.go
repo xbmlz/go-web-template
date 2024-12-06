@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xbmlz/go-web-template/api/constant"
 	"github.com/xbmlz/go-web-template/api/dto"
+
 	"github.com/xbmlz/go-web-template/api/service"
 	"github.com/xbmlz/go-web-template/internal/middleware"
 )

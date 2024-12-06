@@ -11,3 +11,7 @@ export function logout() {
 export function getUserInfo() {
   return request.Get('/auth/user')
 }
+
+export function getPermissions() {
+  return request.Get('/auth/permissions')
+}

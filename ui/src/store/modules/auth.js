@@ -1,11 +1,13 @@
-import { getUserInfo, login } from '@/api/methods/auth'
+import { getPermissions, getUserInfo, login } from '@/api/methods/auth'
+import router from '@/router'
 import { defineStore } from 'pinia'
-import { useRoute, useRouter } from 'vue-router'
+import { unref } from 'vue'
 
 export const useAuthStore = defineStore('user', {
   state: () => ({
     token: '',
     userInfo: {},
+    permissions: {},
   }),
   getters: {
     isLoggedIn: state => !!state.token,
@@ -24,9 +26,8 @@ export const useAuthStore = defineStore('user', {
       this.setToken(token)
     },
     async logout() {
-      const router = useRouter()
-      const route = useRoute()
-      if (route.meta.requiresAuth) {
+      const route = unref(router.currentRoute)
+      if (route.meta && route.meta.requiresAuth) {
         router.push({
           path: '/login',
           query: { redirect: route.fullPath },
@@ -37,6 +38,14 @@ export const useAuthStore = defineStore('user', {
     async getUserInfo() {
       const data = await getUserInfo()
       this.userInfo = data
+    },
+    async getPermissions() {
+      const data = await getPermissions()
+      this.permissions = data
+      console.log(data)
+      const { menus } = data
+      // dynamic generate routes
+      const routes = []
     },
   },
 

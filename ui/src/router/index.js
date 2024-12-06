@@ -42,6 +42,7 @@ router.beforeEach(async (to, from, next) => {
     }
     else {
       await authStore.getUserInfo()
+      await authStore.getPermissions()
       next()
     }
   }
